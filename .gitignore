@@ -1,3 +1,15 @@
+#venv
+env_adp_rag/
+
+# secret
+secrets/
+
+# playground notebook
+*.ipynb
+
+# data
+data/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
