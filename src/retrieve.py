@@ -75,3 +75,17 @@ class Retriever:
             vectorstore = self.create_db()
 
         return vectorstore.as_retriever()
+
+
+def retrieve(state):
+    """
+    Retrieve documents
+    """
+    print("---RETRIEVE---")
+    question = state["question"]
+
+    # Retrieval
+    retriever = Retriever().retrieve()
+
+    documents = retriever.invoke(question)
+    return {"documents": documents, "question": question}

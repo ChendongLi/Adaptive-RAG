@@ -22,8 +22,9 @@ os.environ["LANGCHAIN_API_KEY"] = config['langsmith']['cisco']['langchain_api_ke
 
 
 # retrive
-retriever = Retriever().retrieve()
-# print(retriever.invoke(input="how to use agent to build agentic rag"))
+# retriever = Retriever().retrieve()
+# print(retriever.invoke(
+#     input={"question": "What player at the Bears expected to draft first in the 2024 NFL draft"}))
 
 
 # queston router
@@ -57,21 +58,18 @@ def format_docs(docs):
 # print(web_search({"question": question}))
 
 
-# build graph
+# --------------------------
 
+# build graph
 graph = build_graph()
 
-# Run
 inputs = {
     "question": "What player at the Bears expected to draft first in the 2024 NFL draft?"
 }
 for output in graph.stream(inputs):
     for key, value in output.items():
-        # Node
         pprint(f"Node '{key}':")
-        # Optional: print full state at each node
-        # pprint.pprint(value["keys"], indent=2, width=80, depth=None)
+        pprint(value, indent=2, width=80, depth=None)
     pprint("\n---\n")
 
-# Final generation
 pprint(value["generation"])

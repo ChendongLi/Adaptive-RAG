@@ -46,4 +46,5 @@ def transform_query(state):
     # Re-write question
     better_question = question_rewriter().invoke({"question": question})
 
+    print(f'[rewriter] better_question: {better_question}')
     return {"documents": documents, "question": better_question}

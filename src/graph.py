@@ -1,8 +1,8 @@
 from typing_extensions import TypedDict
 from typing import List
 
-from langgraph.graph import END, StateGraph
-from src.retrieve import Retriever
+from langgraph.graph import END, StateGraph, START
+from src.retrieve import Retriever, retrieve
 from src.router import question_router, route_question
 from src.grader import grade_documents, grade_generation_v_documents_and_question
 from src.generate import generate_answer, decide_to_generate
@@ -35,8 +35,6 @@ def save_graph(graph: object, graph_name: str):
 
 def build_graph():
     workflow = StateGraph(GraphState)
-    retrieve = Retriever().retrieve()
-
     # Define the nodes
     workflow.add_node("web_search", web_search)  # web search
     workflow.add_node("retrieve", retrieve)  # retrieve
@@ -45,7 +43,8 @@ def build_graph():
     workflow.add_node("transform_query", transform_query)  # transform_query
 
     # Build graph
-    workflow.set_conditional_entry_point(
+    workflow.add_conditional_edges(
+        START,
         route_question,
         {
             "web_search": "web_search",

@@ -135,6 +135,7 @@ def grade_generation_v_documents_and_question(state):
     score = hallucination_grader().invoke(
         {"documents": documents, "generation": generation}
     )
+    print('score', score.binary_score)
     grade = score.binary_score
 
     # Check hallucination
@@ -142,6 +143,8 @@ def grade_generation_v_documents_and_question(state):
         print("---DECISION: GENERATION IS GROUNDED IN DOCUMENTS---")
         # Check question-answering
         print("---GRADE GENERATION vs QUESTION---")
+        print(
+            f'hallucination grader question: {question} and generation: {generation}')
         score = answer_grader().invoke(
             {"question": question, "generation": generation})
         grade = score.binary_score

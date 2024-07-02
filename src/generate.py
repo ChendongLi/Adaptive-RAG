@@ -32,6 +32,9 @@ def generate_answer(state):
     # RAG generation
     generation = rag_chain().invoke(
         {"context": documents, "question": question})
+
+    print(f'[generate] generation: {generation}')
+
     return {"documents": documents, "question": question, "generation": generation}
 
 
