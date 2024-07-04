@@ -74,7 +74,7 @@ class Retriever:
             print('No documents in the vectorstore, Create a new one')
             vectorstore = self.create_db()
 
-        return vectorstore.as_retriever()
+        return vectorstore.as_retriever(search_kwargs={"k": 1})
 
 
 def retrieve(state):

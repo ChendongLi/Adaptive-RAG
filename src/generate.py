@@ -33,7 +33,8 @@ def generate_answer(state):
     generation = rag_chain().invoke(
         {"context": documents, "question": question})
 
-    print(f'[generate] generation: {generation}')
+    print(f'[generate_answer] generate_answer: {documents}')
+    print(f'[generate_answer] generate_answer: {generation}')
 
     return {"documents": documents, "question": question, "generation": generation}
 
@@ -50,17 +51,18 @@ def decide_to_generate(state):
     """
 
     print("---ASSESS GRADED DOCUMENTS---")
-    question = state["question"]
-    filtered_documents = state["documents"]
+    generate = state["generate"]
+    force_generate = state["force_generate"]
 
-    if not filtered_documents:
+    if generate or force_generate:
+        # We have relevant documents, so generate answer
+        print("---DECISION: GENERATE---")
+        return "generate_answer"
+
+    else:
         # All documents have been filtered check_relevance
         # We will re-generate a new query
         print(
             "---DECISION: ALL DOCUMENTS ARE NOT RELEVANT TO QUESTION, TRANSFORM QUERY---"
         )
         return "transform_query"
-    else:
-        # We have relevant documents, so generate answer
-        print("---DECISION: GENERATE---")
-        return "generate"

@@ -49,6 +49,8 @@ def grade_documents(state):
     print("---CHECK DOCUMENT RELEVANCE TO QUESTION---")
     question = state["question"]
     documents = state["documents"]
+    generate = state["generate"]
+    force_generate = state["force_generate"]
 
     # Score each doc
     filtered_docs = []
@@ -57,13 +59,18 @@ def grade_documents(state):
             {"question": question, "document": d.page_content}
         )
         grade = score.binary_score
+        # filtered_docs.append(d)
+
         if grade == "yes":
             print("---GRADE: DOCUMENT RELEVANT---")
+            generate = True
             filtered_docs.append(d)
         else:
             print("---GRADE: DOCUMENT NOT RELEVANT---")
+            generate = False
             continue
-    return {"documents": filtered_docs, "question": question}
+
+    return {"documents": filtered_docs, "question": question, "generate": generate, "force_generate": force_generate}
 
 
 # Hallucination Data model
@@ -131,6 +138,7 @@ def grade_generation_v_documents_and_question(state):
     question = state["question"]
     documents = state["documents"]
     generation = state["generation"]
+    force_generate = state["force_generate"] if "force_generate" in state else False
 
     score = hallucination_grader().invoke(
         {"documents": documents, "generation": generation}
@@ -139,7 +147,7 @@ def grade_generation_v_documents_and_question(state):
     grade = score.binary_score
 
     # Check hallucination
-    if grade == "yes":
+    if grade == "yes" or force_generate:
         print("---DECISION: GENERATION IS GROUNDED IN DOCUMENTS---")
         # Check question-answering
         print("---GRADE GENERATION vs QUESTION---")
@@ -148,7 +156,7 @@ def grade_generation_v_documents_and_question(state):
         score = answer_grader().invoke(
             {"question": question, "generation": generation})
         grade = score.binary_score
-        if grade == "yes":
+        if grade == "yes" or force_generate:
             print("---DECISION: GENERATION ADDRESSES QUESTION---")
             return "useful"
         else:
